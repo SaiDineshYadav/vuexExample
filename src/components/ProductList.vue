@@ -1,15 +1,18 @@
 <template>
     <div>
         Products List
-        <div v-for="product of products" :key="product.id">
-           <ul>{{product.name}}</ul> 
-        </div>
+        <ul>
+           <li v-for="product of products" :key="product.id">
+               {{product.name}} - {{product.cost}} - {{product.inventory}}
+               <button :disabled="!productIsInStock(product)" @click="addProductToCart(product)">Add To Cart</button>
+            </li> 
+        </ul>
     </div>
 </template>
 
 <script>
 
-import shop from '../assets/store';
+// import shop from '../assets/store';
 
 import store from '../store/index';
 
@@ -19,16 +22,18 @@ export default {
     computed: {
         products() {
             return store.state.products
+        },
+        productIsInStock() {
+            return store.getters.productIsInStock
         }
     },
-    data(){
-        return {
-            // products: []
+    methods: {
+        addProductToCart(product) {
+            store.dispatch('addProductToCart', product);
         }
     },
     created() {
-        this.products = shop.itemsList;
-        store.commit('setProducts', this.products);
+        // store.dispatch('fetchProducts');
     }
 }
 </script>
